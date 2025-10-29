@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fluxogramas Visuais - 3 Perspectivas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .tabs {
+            display: flex;
+            background: #ECF0F1;
+            border-bottom: 3px solid #2E4057;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            background: transparent;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #2E4057;
+        }
+        
+        .tab:hover {
+            background: rgba(4, 139, 168, 0.1);
+        }
+        
+        .tab.active {
+            background: #2E4057;
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 40px;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Estilos para fluxograma em tabela */
+        .flow-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .flow-table th {
+            background: #2E4057;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: 600;
+            border: 2px solid #1C2836;
+        }
+        
+        .flow-table td {
+            padding: 20px;
+            text-align: center;
+            border: 2px solid #ddd;
+            vertical-align: middle;
+            min-height: 100px;
+        }
+        
+        .flow-step {
+            background: #ECF0F1;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 0.95em;
+            transition: all 0.3s;
+        }
+        
+        .flow-step:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        /* Cores por raia */
+        .raia-cliente {
+            background: linear-gradient(135deg, #667eea20 0%, #5568d330 100%);
+        }
+        
+        .raia-cliente th {
+            background: linear-gradient(135deg, #667eea 0%, #5568d3 100%);
+        }
+        
+        .raia-frontend {
+            background: linear-gradient(135deg, #764ba220 0%, #036B8230 100%);
+        }
+        
+        .raia-frontend th {
+            background: linear-gradient(135deg, #764ba2 0%, #036B82 100%);
+        }
+        
+        .raia-backend {
+            background: linear-gradient(135deg, #F39C1220 0%, #D6891030 100%);
+        }
+        
+        .raia-backend th {
+            background: linear-gradient(135deg, #F39C12 0%, #D68910 100%);
+        }
+        
+        .raia-sistema {
+            background: linear-gradient(135deg, #9b59b620 0%, #8e44ad30 100%);
+        }
+        
+        .raia-sistema th {
+            background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+        }
+        
+        .linha-separacao {
+            background: #2E4057 !important;
+            color: white !important;
+            font-weight: bold;
+            padding: 10px !important;
+        }
+        
+        .insights {
+            background: #FFF3CD;
+            border-left: 5px solid #F39C12;
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 8px;
+        }
+        
+        .insights h3 {
+            color: #856404;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        .insights ul {
+            margin-left: 25px;
+            color: #856404;
+            line-height: 1.8;
+        }
+        
+        .insights strong {
+            color: #856404;
+        }
+        
+        .section-title {
+            font-size: 2em;
+            color: #2E4057;
+            margin: 30px 0 20px 0;
+            padding-bottom: 15px;
+            border-bottom: 4px solid #764ba2;
+        }
+        
+        .legend {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin: 25px 0;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .legend-color {
+            width: 35px;
+            height: 35px;
+            border-radius: 6px;
+            border: 2px solid #333;
+        }
+        
+        .arrow-right {
+            font-size: 2em;
+            color: #764ba2;
+            font-weight: bold;
+        }
+        
+        .highlight-critico {
+            background: #E74C3C;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        
+        .highlight-atencao {
+            background: #F39C12;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        
+        .highlight-sucesso {
+            background: #27AE60;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        
+        @media print {
+            body {
+                background: white;
+            }
+            .tabs {
+                display: none;
+            }
+            .tab-content {
+                display: block !important;
+                page-break-after: always;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔄 Fluxogramas Visuais</h1>
+            <p>3 Perspectivas do Processo de Auditoria em Formato de Tabela</p>
+            <p style="font-size: 0.9em; margin-top: 10px;">Formato visual otimizado para impressão e apresentação</p>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('service-blueprint')">
+                A) Service Blueprint
+            </button>
+            <button class="tab" onclick="showTab('jornada-cliente')">
+                B) Jornada do Cliente
+            </button>
+            <button class="tab" onclick="showTab('jornada-interna')">
+                C) Jornada Interna
+            </button>
+        </div>
+        
+        <!-- TAB 1: SERVICE BLUEPRINT -->
+        <div id="service-blueprint" class="tab-content active">
+            <h2 class="section-title">A) SERVICE BLUEPRINT - Visão em Camadas</h2>
+            
+            <p style="margin-bottom: 30px; font-size: 1.1em; line-height: 1.6;">
+                O Service Blueprint mostra todas as camadas do serviço: desde as ações do cliente até a infraestrutura que sustenta a operação.
+            </p>
+            
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #667eea;"></div>
+                    <span><strong>Cliente</strong> - Ações visíveis</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #764ba2;"></div>
+                    <span><strong>Front-Stage</strong> - Atendimento</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #F39C12;"></div>
+                    <span><strong>Back-Stage</strong> - Processamento</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #9b59b6;"></div>
+                    <span><strong>Sistemas</strong> - Infraestrutura</span>
+                </div>
+            </div>
+            
+            <table class="flow-table">
+                <thead>
+                    <tr>
+                        <th style="width: 15%;">CAMADA</th>
+                        <th>ETAPA 1</th>
+                        <th>ETAPA 2</th>
+                        <th>ETAPA 3</th>
+                        <th>ETAPA 4</th>
+                        <th>ETAPA 5</th>
+                        <th>ETAPA 6</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="raia-cliente">
+                        <th>👤 CLIENTE<br/>(Ações Visíveis)</th>
+                        <td><div class="flow-step">📧 Envia<br/>Documentos</div></td>
+                        <td><div class="flow-step">⏳ Aguarda<br/>Processamento</div></td>
+                        <td><div class="flow-step">📱 Recebe<br/>Notificação</div></td>
+                        <td><div class="flow-step">👁️ Revisa<br/>Demonstrações</div></td>
+                        <td><div class="flow-step">❓ Aprova ou<br/>Ajustes</div></td>
+                        <td><div class="flow-step highlight-sucesso">✅ Aprovação<br/>Final</div></td>
+                    </tr>
+                    <tr>
+                        <td colspan="7" class="linha-separacao">━━━ LINHA DE INTERAÇÃO ━━━</td>
+                    </tr>
+                    <tr class="raia-frontend">
+                        <th>👨‍💼 FRONT-STAGE<br/>(Atendimento)</th>
+                        <td><div class="flow-step">📥 Confirma<br/>Recebimento</div></td>
+                        <td><div class="flow-step">📊 Envia Status<br/>Periódico</div></td>
+                        <td><div class="flow-step">📤 Disponibiliza<br/>Demonstrações</div></td>
+                        <td><div class="flow-step">💬 Esclarece<br/>Dúvidas</div></td>
+                        <td><div class="flow-step">🔄 Ajustes se<br/>Necessário</div></td>
+                        <td><div class="flow-step highlight-sucesso">✅ Finaliza<br/>Atendimento</div></td>
+                    </tr>
+                    <tr>
+                        <td colspan="7" class="linha-separacao">━━━ LINHA DE VISIBILIDADE ━━━</td>
+                    </tr>
+                    <tr class="raia-backend">
+                        <th>⚙️ BACK-STAGE<br/>(Processamento)</th>
+                        <td><div class="flow-step">🔍 Valida<br/>Documentos<br/>🐼 Panda</div></td>
+                        <td><div class="flow-step">⬆️ Importa<br/>para Keevo</div></td>
+                        <td><div class="flow-step">🔄 Concilia<br/>Dados</div></td>
+                        <td><div class="flow-step">📊 Gera Balancete<br/>+ Análise</div></td>
+                        <td><div class="flow-step">📈 Fecha<br/>Demonstrações</div></td>
+                        <td><div class="flow-step highlight-sucesso">✓ Revisão<br/>Qualidade</div></td>
+                    </tr>
+                    <tr>
+                        <td colspan="7" class="linha-separacao">━━━ LINHA DE INTERAÇÃO INTERNA ━━━</td>
+                    </tr>
+                    <tr class="raia-sistema">
+                        <th>🤖 SISTEMAS<br/>(Infraestrutura)</th>
+                        <td><div class="flow-step">🤖 RPA<br/>Download OFX</div></td>
+                        <td><div class="flow-step">🔔 Sistema de<br/>Alertas</div></td>
+                        <td><div class="flow-step">💾 Backup<br/>Automático</div></td>
+                        <td><div class="flow-step">📊 Dashboard<br/>Looker</div></td>
+                        <td><div class="flow-step">📧 E-mail<br/>Automático</div></td>
+                        <td><div class="flow-step">📁 Armazenamento<br/>Documentos</div></td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="insights">
+                <h3>💡 Insights do Service Blueprint</h3>
+                <ul>
+                    <li><strong>80% Invisível:</strong> Cliente vê apenas a camada Front-Stage, mas 80% do trabalho acontece no Back-Stage</li>
+                    <li><strong>4 Linhas Críticas:</strong> Cada linha representa uma barreira de responsabilidade e visibilidade que precisa ser gerenciada</li>
+                    <li><strong>Dependência Tecnológica:</strong> A camada de Sistemas é fundamental - falhas aqui afetam todas as camadas superiores</li>
+                    <li><strong>Oportunidades Identificadas:</strong>
+                        <ul>
+                            <li>Tornar Back-Stage mais visível via dashboard do cliente</li>
+                            <li>Automatizar mais processos na camada de Sistemas</li>
+                            <li>Reduzir handoffs entre Front e Back-Stage</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- TAB 2: JORNADA DO CLIENTE -->
+        <div id="jornada-cliente" class="tab-content">
+            <h2 class="section-title">B) JORNADA DO CLIENTE - Experiência e Emoções</h2>
+            
+            <p style="margin-bottom: 30px; font-size: 1.1em; line-height: 1.6;">
+                Mapeamento completo da experiência do cliente através do tempo, incluindo emoções, touchpoints e oportunidades de melhoria em cada fase.
+            </p>
+            
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #E74C3C;"></div>
+                    <span>😟 <strong>Ponto de Dor</strong></span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #F39C12;"></div>
+                    <span>😐 <strong>Neutro</strong></span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #27AE60;"></div>
+                    <span>😊 <strong>Momento Positivo</strong></span>
+                </div>
+            </div>
+            
+            <h3 style="margin: 30px 0 15px 0; color: #2E4057; font-size: 1.5em;">📧 FASE 1: Consciência e Preparação</h3>
+            <table class="flow-table">
+                <thead>
+                    <tr>
+                        <th style="width: 15%;">ASPECTO</th>
+                        <th>MOMENTO 1</th>
+                        <th>MOMENTO 2</th>
+                        <th>MOMENTO 3</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="raia-cliente">
+                        <th>🎬 AÇÕES</th>
+                        <td><div class="flow-step">📧 Recebe Solicitação<br/>de Documentos</div></td>
+                        <td><div class="flow-step highlight-critico">😟 Preocupação<br/>com Prazos</div></td>
+                        <td><div class="flow-step">📁 Organiza<br/>Documentos</div></td>
+                    </tr>
+                    <tr class="raia-frontend">
+                        <th>📱 TOUCHPOINTS</th>
+                        <td><div class="flow-step">E-mail / WhatsApp</div></td>
+                        <td><div class="flow-step">WhatsApp de lembrete</div></td>
+                        <td><div class="flow-step">Portal (futuro)</div></td>
+                    </tr>
+                    <tr class="raia-backend">
+                        <th>😊 EMOÇÕES</th>
+                        <td><div class="flow-step highlight-atencao">😐 Neutro</div></td>
+                        <td><div class="flow-step highlight-critico">😟 Ansioso</div></td>
+                        <td><div class="flow-step highlight-atencao">🤔 Preocupado</div></td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h3 style="margin: 30px 0 15px 0; color: #2E4057; font-size: 1.5em;">📤 FASE 2: Envio e Validação</h3>
+            <table class="flow-table">
+                <thead>
+                    <tr>
+                        <th style="width: 15%;">ASPECTO</th>
+                        <th>MOMENTO 1</th>
+                        <th>MOMENTO 2</th>
+                        <th>MOMENTO 3</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="raia-cliente">
+                        <th>🎬 AÇÕES</th>
+                        <td><div class="flow-step">📤 Envia<br/>Documentos</div></td>
+                        <td><div class="flow-step">⏳ Aguarda<br/>Confirmação</div></td>
+                        <td><div class="flow-step highlight-sucesso">✅ Recebe<br/>Confirmação</div></td>
+                    </tr>
+                    <tr class="raia-frontend">
+                        <th>📱 TOUCHPOINTS</th>
+                        <td><div class="flow-step">Portal / E-mail</div></td>
+                        <td><div class="flow-step">Sistema interno</div></td>
+                        <td><div class="flow-step">E-mail Automático</div></td>
+                    </tr>
+                    <tr class="raia-backend">
+                        <th>😊 EMOÇÕES</th>
+                        <td><div class="flow-step highlight-atencao">😌 Esperançoso</div></td>
+                        <td><div class="flow-step highlight-atencao">⏰ Expectativa</div></td>
+                        <td><div class="flow-step highlight-sucesso">😊 Aliviado</div></td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h3 style="margin: 30px 0 15px 0; color: #2E4057; font-size: 1.5em;">⏳ FASE 3: Processamento (Período de Espera)</h3>
+            <table class="flow-table">
+                <thead>
+                    <tr>
+                        <th style="width: 15%;">ASPECTO</th>
+                        <th>MOMENTO 1</th>
+                        <th>MOMENTO 2</th>
+                        <th>MOMENTO 3</th>
+                        <th>MOMENTO 4</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="raia-cliente">
+                        <th>🎬 AÇÕES</th>
+                        <td><div class="flow-step">📱 Recebe Updates<br/>Periódicos</div></td>
+                        <td><div class="flow-step">⏰ Aguarda<br/>Conclusão</div></td>
+                        <td><div class="flow-step">🤔 Tem<br/>Dúvidas?</div></td>
+                        <td><div class="flow-step">💬 Contata<br/>Escritório</div></td>
+                    </tr>
+                    <tr class="raia-frontend">
+                        <th>📱 TOUCHPOINTS</th>
+                        <td><div class="flow-step">E-mail de Status</div></td>
+                        <td><div class="flow-step">Dashboard Cliente</div></td>
+                        <td><div class="flow-step">WhatsApp/Telefone</div></td>
+                        <td><div class="flow-step">Atendimento direto</div></td>
+                    </tr>
+                    <tr class="raia-backend">
+                        <th>😊 EMOÇÕES</th>
+                        <td><div class="flow-step highlight-sucesso">😊 Informado</div></td>
+                        <td><div class="flow-step highlight-atencao">😐 Paciente</div></td>
+                        <td><div class="flow-step highlight-atencao">🤨 Curioso</div></td>
+                        <td><div class="flow-step highlight-sucesso">🙂 Esclarecido</div></td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="insights">
+                <h3>💡 Insights da Jornada do Cliente</h3>
+                <ul>
+                    <li><strong>Pontos de Dor Identificados:</strong>
+                        <ul>
+                            <li>⚠️ <strong>Ansiedade Inicial (Fase 1):</strong> Pressão por prazo gera estresse desnecessário</li>
+                            <li>⚠️ <strong>Caixa Preta (Fase 3):</strong> Falta de visibilidade causa insegurança</li>
+                            <li>⚠️ <strong>Ajustes de Última Hora:</strong> Retrabalho frustra cliente e equipe</li>
+                        </ul>
+                    </li>
+                    <li><strong>Momentos da Verdade:</strong>
+                        <ul>
+                            <li>✨ Confirmação rápida do recebimento (primeiras horas são críticas)</li>
+                            <li>✨ Updates proativos durante processamento (reduz ansiedade em 70%)</li>
+                            <li>✨ Qualidade das demonstrações finais (define o NPS)</li>
+                        </ul>
+                    </li>
+                    <li><strong>Recomendações Prioritárias:</strong>
+                        <ul>
+                            <li>🎯 <strong>Portal Self-Service:</strong> Elimina ansiedade inicial, cliente controla envio</li>
+                            <li>🎯 <strong>Dashboard Tempo Real:</strong> Acaba com a caixa preta, cliente acompanha status</li>
+                            <li>🎯 <strong>Checklist de Validação:</strong> Evita ajustes de última hora</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- TAB 3: JORNADA INTERNA -->
+        <div id="jornada-interna" class="tab-content">
+            <h2 class="section-title">C) JORNADA INTERNA - Por Responsabilidade</h2>
+            
+            <p style="margin-bottom: 30px; font-size: 1.1em; line-height: 1.6;">
+                Fluxo completo do processo interno com responsabilidades claras por função e regime tributário.
+            </p>
+            
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #2E4057;"></div>
+                    <span><strong>Coordenadora</strong> - Estratégia</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #F39C12;"></div>
+                    <span><strong>Auxiliares</strong> - Operação</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #764ba2;"></div>
+                    <span><strong>Técnicos</strong> - Análise</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #9b59b6;"></div>
+                    <span><strong>Analista</strong> - Complexidade</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #34495e;"></div>
+                    <span><strong>Sistemas</strong> - Suporte</span>
+                </div>
+            </div>
+            
+            <table class="flow-table">
+                <thead>
+                    <tr>
+                        <th style="width: 15%;">RAIA</th>
+                        <th>ETAPA 1<br/>Início</th>
+                        <th>ETAPA 2<br/>Preparação</th>
+                        <th>ETAPA 3<br/>Processamento</th>
+                        <th>ETAPA 4<br/>Análise</th>
+                        <th>ETAPA 5<br/>Qualidade</th>
+                        <th>ETAPA 6<br/>Entrega</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="raia-cliente">
+                        <th>👤 CLIENTE</th>
+                        <td><div class="flow-step">📤 Envia<br/>Documentos</div></td>
+                        <td><div class="flow-step">⏳ Aguarda</div></td>
+                        <td><div class="flow-step">⏳ Aguarda</div></td>
+                        <td><div class="flow-step">📬 Recebe<br/>Demonstrações</div></td>
+                        <td><div class="flow-step">✅ Aprova</div></td>
+                        <td><div class="flow-step highlight-sucesso">✓ Concluído</div></td>
+                    </tr>
+                    <tr style="background: linear-gradient(135deg, #2E405720 0%, #1C283630 100%);">
+                        <th style="background: linear-gradient(135deg, #2E4057 0%, #1C2836 100%); color: white;">👩‍💼 COORDENADORA<br/>(15 LR)</th>
+                        <td><div class="flow-step">📋 Recebe<br/>Solicitação</div></td>
+                        <td><div class="flow-step">🎯 Prioriza<br/>por Risco</div></td>
+                        <td><div class="flow-step">👥 Atribui<br/>Responsável</div></td>
+                        <td><div class="flow-step">👁️ Revisa<br/>Casos VIP</div></td>
+                        <td><div class="flow-step">✅ Aprovação<br/>Final</div></td>
+                        <td><div class="flow-step highlight-sucesso">📧 Libera p/<br/>Cliente</div></td>
+                    </tr>
+                    <tr class="raia-backend">
+                        <th style="background: linear-gradient(135deg, #F39C12 0%, #D68910 100%);">📝 AUXILIARES (4)<br/>(52 SN cada)</th>
+                        <td><div class="flow-step">📥 Recebe<br/>Docs</div></td>
+                        <td><div class="flow-step">🔀 Classifica<br/>Tipo</div></td>
+                        <td><div class="flow-step">🤖 RPA / 🐼 Panda<br/>✏️ Manual</div></td>
+                        <td><div class="flow-step">✓ Valida<br/>Inicial</div></td>
+                        <td><div class="flow-step">⬆️ Upload<br/>Keevo</div></td>
+                        <td><div class="flow-step">→ Próxima<br/>Etapa</div></td>
+                    </tr>
+                    <tr class="raia-frontend">
+                        <th style="background: linear-gradient(135deg, #764ba2 0%, #036B82 100%);">⚙️ TÉCNICOS (2)<br/>(70 LP cada)</th>
+                        <td><div class="flow-step">—</div></td>
+                        <td><div class="flow-step">—</div></td>
+                        <td><div class="flow-step">📊 Recebe no<br/>Keevo</div></td>
+                        <td><div class="flow-step">🔍 Conciliação<br/>Bancária</div></td>
+                        <td><div class="flow-step">📈 Gera<br/>Balancete</div></td>
+                        <td><div class="flow-step highlight-sucesso">📊 Fecha<br/>Demonstrações</div></td>
+                    </tr>
+                    <tr class="raia-sistema">
+                        <th style="background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);">🎓 ANALISTA<br/>(14 LR)</th>
+                        <td><div class="flow-step">—</div></td>
+                        <td><div class="flow-step">—</div></td>
+                        <td><div class="flow-step">📋 Casos<br/>Complexos</div></td>
+                        <td><div class="flow-step">🔍 Análise<br/>Profunda</div></td>
+                        <td><div class="flow-step">📊 Apuração<br/>Tributos</div></td>
+                        <td><div class="flow-step highlight-sucesso">⬆️ P/ Coordenadora</div></td>
+                    </tr>
+                    <tr style="background: linear-gradient(135deg, #34495e20 0%, #2c3e5030 100%);">
+                        <th style="background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%); color: white;">🤖 SISTEMAS</th>
+                        <td><div class="flow-step">🔄 Keevo</div></td>
+                        <td><div class="flow-step">🐼 Panda</div></td>
+                        <td><div class="flow-step">🤖 RPA<br/>Automação</div></td>
+                        <td><div class="flow-step">📊 Looker<br/>Dashboard</div></td>
+                        <td><div class="flow-step">💾 Backup</div></td>
+                        <td><div class="flow-step">📧 E-mail<br/>Auto</div></td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h3 style="margin: 40px 0 20px 0; color: #2E4057; font-size: 1.5em;">📊 Distribuição de Carga por Colaborador</h3>
+            <table class="flow-table">
+                <thead>
+                    <tr>
+                        <th>FUNÇÃO</th>
+                        <th>QTD</th>
+                        <th>EMPRESAS<br/>CADA</th>
+                        <th>REGIME</th>
+                        <th>% TEMPO<br/>MANUAL</th>
+                        <th>OPORTUNIDADE<br/>AUTOMAÇÃO</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="background: #2E405720;">
+                        <td><strong>👩‍💼 Coordenadora</strong></td>
+                        <td>1</td>
+                        <td><strong>15</strong></td>
+                        <td>Lucro Real VIP</td>
+                        <td>30%</td>
+                        <td>Relatórios automáticos</td>
+                    </tr>
+                    <tr style="background: #9b59b620;">
+                        <td><strong>🎓 Analista</strong></td>
+                        <td>1</td>
+                        <td><strong>14</strong></td>
+                        <td>Lucro Real Complexo</td>
+                        <td>40%</td>
+                        <td>IA para apuração</td>
+                    </tr>
+                    <tr style="background: #764ba220;">
+                        <td><strong>⚙️ Técnico 1 + 2</strong></td>
+                        <td>2</td>
+                        <td><strong>70</strong></td>
+                        <td>Lucro Presumido</td>
+                        <td><span class="highlight-critico">60%</span></td>
+                        <td><strong>Conciliação IA 🎯</strong></td>
+                    </tr>
+                    <tr style="background: #F39C1220;">
+                        <td><strong>📝 Auxiliares 1-4</strong></td>
+                        <td>4</td>
+                        <td><strong>52-53</strong></td>
+                        <td>Simples Nacional</td>
+                        <td><span class="highlight-critico">70%</span></td>
+                        <td><strong>RPA massivo 🎯</strong></td>
+                    </tr>
+                    <tr style="background: #ECF0F1; font-weight: bold;">
+                        <td><strong>TOTAL</strong></td>
+                        <td><strong>8</strong></td>
+                        <td><strong>379</strong></td>
+                        <td>Mix</td>
+                        <td><span class="highlight-atencao">~60%</span></td>
+                        <td><span class="highlight-sucesso">↓ para 25%</span></td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="insights">
+                <h3>💡 Insights da Jornada Interna</h3>
+                <ul>
+                    <li><strong>Gargalo Principal:</strong> Conciliação bancária (técnicos) - <span class="highlight-critico">candidato #1</span> para automação com IA</li>
+                    <li><strong>Especialização Funciona:</strong> Foco em regime específico aumenta produtividade em 30-40%</li>
+                    <li><strong>Handoffs Críticos:</strong> Passagens Auxiliar→Técnico e Técnico→Analista precisam de clareza absoluta</li>
+                    <li><strong>Oportunidade IA:</strong> Análise automática de complexidade pode otimizar distribuição em tempo real</li>
+                    <li><strong>Balanceamento:</strong>
+                        <ul>
+                            <li>Auxiliares: mais empresas (52-53), mas tarefas mais simples e repetitivas</li>
+                            <li>Técnicos: carga intermediária (70), complexidade média</li>
+                            <li>Especialistas: menos empresas (14-15), alta complexidade</li>
+                        </ul>
+                    </li>
+                    <li><strong>Quick Wins Identificados:</strong>
+                        <ul>
+                            <li>🎯 <strong>Imediato:</strong> RPA para OFX nos Auxiliares (↓70% tempo)</li>
+                            <li>🎯 <strong>30 dias:</strong> IA para conciliação dos Técnicos (↓60% tempo)</li>
+                            <li>🎯 <strong>60 dias:</strong> Portal cliente para Coordenadora (↓50% follow-ups)</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>

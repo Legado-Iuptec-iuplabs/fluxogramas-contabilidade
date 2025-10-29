@@ -3,47 +3,320 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="refresh" content="0; url=Fluxogramas-Visuais-Melhorados.html">
-    <title>Fluxogramas de Contabilidade</title>
+    <title>Fluxogramas de Contabilidade - Página Inicial</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+        * {
             margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            min-height: 100vh;
+            padding: 40px 20px;
         }
+        
         .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
             text-align: center;
-        }
-        .spinner {
-            border: 5px solid rgba(255,255,255,0.3);
-            border-top: 5px solid white;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        a {
             color: white;
-            text-decoration: underline;
+            margin-bottom: 60px;
+            animation: fadeInDown 0.8s ease;
+        }
+        
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 15px;
+            text-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.3em;
+            opacity: 0.95;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            animation: fadeInUp 1s ease;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--gradient);
+            transition: height 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+        
+        .card:hover::before {
+            height: 100%;
+            opacity: 0.05;
+        }
+        
+        .card-icon {
+            font-size: 3.5em;
+            margin-bottom: 20px;
+            display: block;
+        }
+        
+        .card-title {
+            font-size: 1.8em;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .card-description {
+            color: #666;
+            font-size: 1em;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .card-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            background: var(--gradient);
+            color: white;
+        }
+        
+        /* Cores específicas de cada card */
+        .card-contabilidade {
+            --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .card-marketing {
+            --gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .card-vendas {
+            --gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+        
+        .card-legalizacao {
+            --gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        
+        .card-fiscal {
+            --gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+        
+        .card-trabalhista {
+            --gradient: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+        }
+        
+        .card-auditoria {
+            --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 60px;
+            opacity: 0.9;
+            animation: fadeIn 1.5s ease;
+        }
+        
+        .footer p {
+            font-size: 1em;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        /* Animações */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        /* Responsivo */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .header p {
+                font-size: 1em;
+            }
+            
+            .cards-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .card {
+                padding: 25px;
+            }
+            
+            .card-icon {
+                font-size: 2.5em;
+            }
+            
+            .card-title {
+                font-size: 1.5em;
+            }
+        }
+        
+        /* Efeito de pulso no hover */
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+        
+        .card:hover .card-icon {
+            animation: pulse 0.6s ease;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🔄 Fluxogramas de Contabilidade</h1>
-        <div class="spinner"></div>
-        <p>Redirecionando para os fluxogramas...</p>
-        <p><a href="Fluxogramas-Visuais-Melhorados.html">Clique aqui se não for redirecionado automaticamente</a></p>
+        <div class="header">
+            <h1>📊 Fluxogramas de Contabilidade</h1>
+            <p>Escolha um departamento para visualizar os processos detalhados</p>
+        </div>
+        
+        <div class="cards-grid">
+            <!-- Card 1: Contabilidade -->
+            <a href="Fluxogramas-Visuais-Melhorados.html" class="card card-contabilidade">
+                <span class="card-icon">📊</span>
+                <h2 class="card-title">CONTABILIDADE</h2>
+                <p class="card-description">
+                    Processos de fechamento contábil, conciliações bancárias, lançamentos e demonstrações financeiras.
+                </p>
+                <span class="card-badge">379 empresas</span>
+            </a>
+            
+            <!-- Card 2: Marketing -->
+            <a href="marketing.html" class="card card-marketing">
+                <span class="card-icon">📱</span>
+                <h2 class="card-title">MARKETING</h2>
+                <p class="card-description">
+                    Atração de leads, campanhas digitais, nutrição e conversão de potenciais clientes.
+                </p>
+                <span class="card-badge">150+ MQLs/mês</span>
+            </a>
+            
+            <!-- Card 3: Vendas -->
+            <a href="vendas.html" class="card card-vendas">
+                <span class="card-icon">💼</span>
+                <h2 class="card-title">VENDAS</h2>
+                <p class="card-description">
+                    Processo comercial completo, desde o primeiro contato até o fechamento e onboarding.
+                </p>
+                <span class="card-badge">25% conversão</span>
+            </a>
+            
+            <!-- Card 4: Legalização -->
+            <a href="legalizacao.html" class="card card-legalizacao">
+                <span class="card-icon">🏢</span>
+                <h2 class="card-title">LEGALIZAÇÃO</h2>
+                <p class="card-description">
+                    Abertura de empresas, registro na Junta Comercial, obtenção de CNPJ e alvarás.
+                </p>
+                <span class="card-badge">20 dias médio</span>
+            </a>
+            
+            <!-- Card 5: Fiscal e Tributário -->
+            <a href="fiscal.html" class="card card-fiscal">
+                <span class="card-icon">📊</span>
+                <h2 class="card-title">FISCAL E TRIBUTÁRIO</h2>
+                <p class="card-description">
+                    Apuração de impostos, SPED Fiscal, cálculo de tributos e emissão de guias.
+                </p>
+                <span class="card-badge">Zero multas</span>
+            </a>
+            
+            <!-- Card 6: Trabalhista -->
+            <a href="trabalhista.html" class="card card-trabalhista">
+                <span class="card-icon">👥</span>
+                <h2 class="card-title">TRABALHISTA E PREVIDENCIÁRIO</h2>
+                <p class="card-description">
+                    Folha de pagamento, eSocial, FGTS, cálculos trabalhistas e obrigações acessórias.
+                </p>
+                <span class="card-badge">60 folhas/mês</span>
+            </a>
+            
+            <!-- Card 7: Auditoria -->
+            <a href="auditoria.html" class="card card-auditoria">
+                <span class="card-icon">🔍</span>
+                <h2 class="card-title">AUDITORIA INTERNA</h2>
+                <p class="card-description">
+                    Revisão de processos, análise de riscos, testes de controles e recomendações.
+                </p>
+                <span class="card-badge">95%+ compliance</span>
+            </a>
+        </div>
+        
+        <div class="footer">
+            <p>✨ Sistema de Fluxogramas Visuais | Todos os departamentos em um só lugar</p>
+            <p style="margin-top: 10px; font-size: 0.9em;">Desenvolvido com ❤️ para automação de processos contábeis</p>
+        </div>
     </div>
 </body>
 </html>
